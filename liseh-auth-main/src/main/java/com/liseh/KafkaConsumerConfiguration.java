@@ -25,7 +25,6 @@ import java.util.Map;
 
 @EnableKafka
 @Configuration
-@PropertySource("classpath:kafka_configs.properties")
 public class KafkaConsumerConfiguration {
     @Value("${kafka.bootstrap-servers}")
     private String bootStrapServers;

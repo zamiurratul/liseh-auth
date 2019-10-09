@@ -13,7 +13,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
-@PropertySource("classpath:kafka_configs.properties")
 public class KafkaProducerConfiguration {
     @Value("${kafka.bootstrap-servers}")
     private String bootStrapServers;

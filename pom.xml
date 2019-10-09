@@ -17,6 +17,7 @@
 
     <modules>
         <module>liseh-auth-common</module>
+        <module>liseh-auth-main</module>
         <module>liseh-auth-repository</module>
         <module>liseh-auth-service</module>
         <module>liseh-auth-service-impl</module>
