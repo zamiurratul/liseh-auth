@@ -1,0 +1,33 @@
+spring:
+  profiles: liseh
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/liseh
+    username: root
+    password:
+    tomcat.remove-abandoned-timeout: 60
+  jpa:
+    show-sql: true #To dump the queries to standard out
+    generate-ddl: true #For DDL generation
+    hibernate.ddl-auto: update #Values are none, validate, update, create, and create-drop
+    properties.hibernate.format_sql: false #To beautify or pretty print the SQL but takes up more screen space
+    properties.hibernate.use_sql_comments: false #Hibernate will put comments inside all generated SQL statements to hint what’s the generated SQL trying to do
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+
+server:
+  port: 7777
+
+kafka:
+  bootstrap-servers: localhost:9092
+  consumergroup: bll-process-group
+
+logging:
+  file: ./logs/server.log
+  level:
+    root: INFO
+    com.robi.redshift: DEBUG
+    org.springframework.kafka: ERROR
+    org.hibernate.SQL: ERROR #To log the SQL queries & output the schema creation
+    org.hibernate.type.descriptor.sql.BasicBinder: ERROR #To display hibernate sql parameter values
+    org.apache.kafka.clients.producer: ERROR
+    org.apache.kafka.clients.admin: ERROR
