@@ -1,0 +1,11 @@
+{
+  "id": 1,
+  "clientId": "ID_a70f59eeb15d408dae6b87f3d4db8293",
+  "clientSecret": "$2a$10$IesU4wAOMc60ojZCenq9K.VWZUp9BCCziMe2JuDe6LHZDz7mdTdqS",
+  "username": "liseh_web_client",
+  "email": "liseh_web_client@gmail.com",
+  "isVerified": false,
+  "created": 1570883737632,
+  "updated": null
+}
+password=123456

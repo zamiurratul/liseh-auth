@@ -2,7 +2,7 @@ spring:
   profiles: liseh
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/liseh
+    url: jdbc:mysql://localhost:3306/liseh_auth
     username: root
     password:
     tomcat.remove-abandoned-timeout: 60
