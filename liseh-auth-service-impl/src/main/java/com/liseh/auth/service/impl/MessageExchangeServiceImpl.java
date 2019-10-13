@@ -29,16 +29,11 @@ public class MessageExchangeServiceImpl implements MessageExchangeService {
     @Value("${spring.kafka.reply-topic-async}")
     private String replyTopicAsync;
 
-//    private final KafkaTemplate<String, GenericKafkaObject> kafkaTemplate;
+    private final KafkaTemplate<String, GenericKafkaObject> kafkaTemplate;
     private final ReplyingKafkaTemplate<String, GenericKafkaObject, GenericKafkaObject> replyingKafkaTemplate;
 
-//    public MessageExchangeServiceImpl(KafkaTemplate<String, GenericKafkaObject> kafkaTemplate, ReplyingKafkaTemplate<String, GenericKafkaObject, GenericKafkaObject> replyingKafkaTemplate) {
-//        this.kafkaTemplate = kafkaTemplate;
-//        this.replyingKafkaTemplate = replyingKafkaTemplate;
-//    }
-
-
-    public MessageExchangeServiceImpl(ReplyingKafkaTemplate<String, GenericKafkaObject, GenericKafkaObject> replyingKafkaTemplate) {
+    public MessageExchangeServiceImpl(KafkaTemplate<String, GenericKafkaObject> kafkaTemplate, ReplyingKafkaTemplate<String, GenericKafkaObject, GenericKafkaObject> replyingKafkaTemplate) {
+        this.kafkaTemplate = kafkaTemplate;
         this.replyingKafkaTemplate = replyingKafkaTemplate;
     }
 
@@ -48,26 +43,12 @@ public class MessageExchangeServiceImpl implements MessageExchangeService {
         producerRecord.headers().add(new RecordHeader(KafkaHeaders.REPLY_TOPIC, replyTopicSync.getBytes()));
 
         RequestReplyFuture<String, GenericKafkaObject, GenericKafkaObject> requestReplyFuture = replyingKafkaTemplate.sendAndReceive(producerRecord);
-        requestReplyFuture.addCallback(new ListenableFutureCallback<ConsumerRecord<String, GenericKafkaObject>>() {
-            @Override
-            public void onFailure(Throwable throwable) {
-
-            }
-
-            @Override
-            public void onSuccess(ConsumerRecord<String, GenericKafkaObject> result) {
-                // get consumer record value
-                GenericKafkaObject reply = result.value();
-                System.out.println("Reply: " + reply.toString());
-            }
-        });
         ConsumerRecord<String, GenericKafkaObject> consumerRecord =  requestReplyFuture.get();
-        GenericKafkaObject reply = consumerRecord.value();
-        return reply;
+        return consumerRecord.value();
     }
 
-//    @Override
-//    public void sendMessage(GenericKafkaObject request) throws InterruptedException, ExecutionException {
-//        kafkaTemplate.send(requestTopicAsync, request);
-//    }
+    @Override
+    public void sendMessage(GenericKafkaObject request) throws InterruptedException, ExecutionException {
+        kafkaTemplate.send(requestTopicAsync, request);
+    }
 }

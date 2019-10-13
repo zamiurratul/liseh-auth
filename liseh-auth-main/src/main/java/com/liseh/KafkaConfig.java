@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @EnableKafka
-@Configuration
+@Configuration()
 public class KafkaConfig {
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;
@@ -47,15 +47,6 @@ public class KafkaConfig {
     private Long replyTimeout;
 
     @Bean
-    public ProducerFactory<String, GenericKafkaObject> producerFactory() {
-        Map<String, Object> configs = new HashMap<>();
-        configs.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-        configs.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-        configs.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
-        return new DefaultKafkaProducerFactory<>(configs);
-    }
-
-    @Bean
     public ConsumerFactory<String, GenericKafkaObject> consumerFactory() {
         Map<String, Object> configs = new HashMap<>();
         configs.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
@@ -67,64 +58,32 @@ public class KafkaConfig {
                 new JsonDeserializer<>(GenericKafkaObject.class));
     }
 
-//    @Bean
-//    public KafkaTemplate<String, GenericKafkaObject> kafkaTemplate() {
-//        return new KafkaTemplate<>(producerFactory());
-//    }
-
     @Bean
-    public ReplyingKafkaTemplate<String, GenericKafkaObject, GenericKafkaObject> replyingKafkaTemplate() {
-        ReplyingKafkaTemplate<String, GenericKafkaObject, GenericKafkaObject> replyingTemplate = new ReplyingKafkaTemplate<>(producerFactory(), kafkaMessageListenerContainer());
+    public ReplyingKafkaTemplate<String, GenericKafkaObject, GenericKafkaObject> replyingKafkaTemplate(ProducerFactory<String, GenericKafkaObject> pf, KafkaMessageListenerContainer<String, GenericKafkaObject> container) {
+        ReplyingKafkaTemplate<String, GenericKafkaObject, GenericKafkaObject> replyingTemplate = new ReplyingKafkaTemplate<>(pf, container);
         replyingTemplate.setReplyTimeout(replyTimeout);
         return replyingTemplate;
     }
 
     @Bean
-    public KafkaMessageListenerContainer<String, GenericKafkaObject> kafkaMessageListenerContainer() {
-        ContainerProperties containerProperties = new ContainerProperties(replyTopicSync, replyTopicAsync);
-        return new KafkaMessageListenerContainer<>(consumerFactory(), containerProperties);
+    public ProducerFactory<String, GenericKafkaObject> producerFactory() {
+        Map<String, Object> configs = new HashMap<>();
+        configs.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        configs.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        configs.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+        return new DefaultKafkaProducerFactory<>(configs);
+    }
+
+    @Bean
+    public KafkaMessageListenerContainer<String, GenericKafkaObject> kafkaMessageListenerContainer(ConsumerFactory<String, GenericKafkaObject> cf) {
+        ContainerProperties props = new ContainerProperties(replyTopicSync);
+        return new KafkaMessageListenerContainer<>(cf, props);
     }
 
     @Bean
     public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, GenericKafkaObject>> kafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, GenericKafkaObject> factory = new ConcurrentKafkaListenerContainerFactory<>();
-//        factory.setReplyTemplate(kafkaTemplate());
-        factory.setReplyTemplate(replyingKafkaTemplate());
+        factory.setReplyTemplate(replyingKafkaTemplate(producerFactory(), kafkaMessageListenerContainer(consumerFactory())));
         return factory;
-    }
-
-    @Bean
-    public KafkaAdmin admin() {
-        Map<String, Object> configs = new HashMap<>();
-        configs.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-        return new KafkaAdmin(configs);
-    }
-
-    @Bean
-    public NewTopic requestTopicSyncKafka() {
-        Map<String, String> configs = new HashMap<>();
-        configs.put("retention.ms", replyTimeout.toString());
-        return new NewTopic(requestTopicSync, 2, (short) 2).configs(configs);
-    }
-
-    @Bean
-    public NewTopic replyTopicSyncKafka() {
-        Map<String, String> configs = new HashMap<>();
-        configs.put("retention.ms", replyTimeout.toString());
-        return new NewTopic(replyTopicSync, 2, (short) 2).configs(configs);
-    }
-
-    @Bean
-    public NewTopic requestTopicAsyncKafka() {
-        Map<String, String> configs = new HashMap<>();
-        configs.put("retention.ms", replyTimeout.toString());
-        return new NewTopic(requestTopicAsync, 2, (short) 2).configs(configs);
-    }
-
-    @Bean
-    public NewTopic replyTopicAsyncKafka() {
-        Map<String, String> configs = new HashMap<>();
-        configs.put("retention.ms", replyTimeout.toString());
-        return new NewTopic(replyTopicAsync, 2, (short) 2).configs(configs);
     }
 }
