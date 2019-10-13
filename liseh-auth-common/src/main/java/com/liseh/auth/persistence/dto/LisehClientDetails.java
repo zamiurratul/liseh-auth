@@ -56,6 +56,7 @@ public class LisehClientDetails implements ClientDetails {
     public Set<String> getAuthorizedGrantTypes() {
         Set<String> grantTypes = new HashSet<>();
         grantTypes.add("client_credentials");
+        grantTypes.add("password");
         return grantTypes;
     }
 
