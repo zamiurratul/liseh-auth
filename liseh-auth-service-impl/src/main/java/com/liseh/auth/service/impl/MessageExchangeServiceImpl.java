@@ -11,23 +11,19 @@ import org.springframework.kafka.requestreply.ReplyingKafkaTemplate;
 import org.springframework.kafka.requestreply.RequestReplyFuture;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.stereotype.Service;
-import org.springframework.util.concurrent.ListenableFutureCallback;
 
 import java.util.concurrent.ExecutionException;
 
 @Service
 public class MessageExchangeServiceImpl implements MessageExchangeService {
-    @Value("${spring.kafka.request-topic-sync}")
-    private String requestTopicSync;
+    @Value("${liseh-auth-request-topic-async}")
+    private String authRequestTopicAsync;
 
-    @Value("${spring.kafka.request-topic-async}")
-    private String requestTopicAsync;
+    @Value("${liseh-auth-request-topic-sync}")
+    private String authRequestTopicSync;
 
-    @Value("${spring.kafka.reply-topic-sync}")
-    private String replyTopicSync;
-
-    @Value("${spring.kafka.reply-topic-async}")
-    private String replyTopicAsync;
+    @Value("${liseh-auth-reply-topic-sync}")
+    private String authReplyTopicSync;
 
     private final KafkaTemplate<String, GenericKafkaObject> kafkaTemplate;
     private final ReplyingKafkaTemplate<String, GenericKafkaObject, GenericKafkaObject> replyingKafkaTemplate;
@@ -39,8 +35,8 @@ public class MessageExchangeServiceImpl implements MessageExchangeService {
 
     @Override
     public GenericKafkaObject sendAndReceiveMessage(GenericKafkaObject request) throws InterruptedException, ExecutionException {
-        ProducerRecord<String, GenericKafkaObject> producerRecord = new ProducerRecord<>(requestTopicSync, request);
-        producerRecord.headers().add(new RecordHeader(KafkaHeaders.REPLY_TOPIC, replyTopicSync.getBytes()));
+        ProducerRecord<String, GenericKafkaObject> producerRecord = new ProducerRecord<>(authRequestTopicSync, request);
+        producerRecord.headers().add(new RecordHeader(KafkaHeaders.REPLY_TOPIC, authReplyTopicSync.getBytes()));
 
         RequestReplyFuture<String, GenericKafkaObject, GenericKafkaObject> requestReplyFuture = replyingKafkaTemplate.sendAndReceive(producerRecord);
         ConsumerRecord<String, GenericKafkaObject> consumerRecord =  requestReplyFuture.get();
@@ -49,6 +45,6 @@ public class MessageExchangeServiceImpl implements MessageExchangeService {
 
     @Override
     public void sendMessage(GenericKafkaObject request) throws InterruptedException, ExecutionException {
-        kafkaTemplate.send(requestTopicAsync, request);
+        kafkaTemplate.send(authRequestTopicAsync, request);
     }
 }
