@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class GenericKafkaObject {
-    private String actionName;
+    private String eventType;
+    private String eventName;
     private String content;
 }

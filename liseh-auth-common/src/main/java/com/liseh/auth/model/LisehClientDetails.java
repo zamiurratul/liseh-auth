@@ -1,4 +1,4 @@
-package com.liseh.auth.persistence.dto;
+package com.liseh.auth.model;
 
 import com.liseh.auth.persistence.entity.Client;
 import org.springframework.security.core.GrantedAuthority;
@@ -57,6 +57,9 @@ public class LisehClientDetails implements ClientDetails {
         Set<String> grantTypes = new HashSet<>();
         grantTypes.add("client_credentials");
         grantTypes.add("password");
+        grantTypes.add("authorization_code");
+        grantTypes.add("refresh_token");
+        grantTypes.add("implicit");
         return grantTypes;
     }
 

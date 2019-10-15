@@ -1,6 +1,6 @@
 package com.liseh.auth.service.impl;
 
-import com.liseh.auth.persistence.dto.LisehClientDetails;
+import com.liseh.auth.model.LisehClientDetails;
 import com.liseh.auth.persistence.entity.Client;
 import com.liseh.auth.repository.ClientRepository;
 import org.springframework.security.oauth2.provider.ClientDetails;

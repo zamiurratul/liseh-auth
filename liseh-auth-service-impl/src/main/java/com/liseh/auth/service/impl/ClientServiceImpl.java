@@ -10,23 +10,22 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ClientServiceImpl implements ClientRegistrationService {
-//    private final ClientRepository clientRepository;
-//    private final PasswordEncoder passwordEncoder;
+    private final ClientRepository clientRepository;
+    private final PasswordEncoder passwordEncoder;
 
-//    public ClientServiceImpl(ClientRepository clientRepository, PasswordEncoder passwordEncoder) {
-//        this.clientRepository = clientRepository;
-//        this.passwordEncoder = passwordEncoder;
-//    }
+    public ClientServiceImpl(ClientRepository clientRepository, PasswordEncoder passwordEncoder) {
+        this.clientRepository = clientRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @Override
     public Client registerClient(ClientRegistrationDto registrationDto) {
-//        Client client = new Client();
-//        client.setUsername(registrationDto.getUsername());
-//        client.setClientId("ID_" + CommonUtil.randomUUID());
-//        client.setClientSecret(passwordEncoder.encode(registrationDto.getPassword()));
-//        client.setEmail(registrationDto.getEmail());
-//        client.setIsVerified(false);
-//        return clientRepository.save(client);
-        return null;
+        Client client = new Client();
+        client.setUsername(registrationDto.getUsername());
+        client.setClientId("ID_" + CommonUtil.randomUUID());
+        client.setClientSecret(passwordEncoder.encode(registrationDto.getPassword()));
+        client.setEmail(registrationDto.getEmail());
+        client.setIsVerified(false);
+        return clientRepository.save(client);
     }
 }

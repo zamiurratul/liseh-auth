@@ -1,6 +1,9 @@
 package com.liseh.config;
 
 import com.liseh.auth.service.impl.ClientDetailsServiceImpl;
+import com.liseh.auth.service.impl.UserDetailsServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,13 +20,15 @@ import org.springframework.security.oauth2.provider.token.store.InMemoryTokenSto
 @EnableAuthorizationServer
 @Configuration
 public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
-//    @Autowired
-//    @Qualifier("authenticationManagerBean")
-//    private AuthenticationManager authenticationManager;
+    @Autowired
+    @Qualifier("authenticationManagerBean")
+    private AuthenticationManager authenticationManager;
     private final ClientDetailsServiceImpl clientDetailsService;
+    private final UserDetailsServiceImpl userDetailsService;
 
-    public AuthServerConfig(ClientDetailsServiceImpl clientDetailsService) {
+    public AuthServerConfig(ClientDetailsServiceImpl clientDetailsService, UserDetailsServiceImpl userDetailsService) {
         this.clientDetailsService = clientDetailsService;
+        this.userDetailsService = userDetailsService;
     }
 
     @Bean
@@ -47,8 +52,9 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
 
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
-        endpoints.tokenStore(tokenStore());
-//                .authenticationManager(authenticationManager);
+        endpoints
+                .tokenStore(tokenStore())
+                .authenticationManager(authenticationManager);
     }
 
 //    @Bean
