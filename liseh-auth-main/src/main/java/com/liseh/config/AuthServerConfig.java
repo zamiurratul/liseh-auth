@@ -3,6 +3,7 @@ package com.liseh.config;
 import com.liseh.auth.service.impl.ClientDetailsServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
@@ -38,20 +39,6 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
                 .tokenKeyAccess("permitAll()")
                 .checkTokenAccess("permitAll()"); // permitAll() / isAuthenticated()
     }
-
-/*    @Override
-    public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-        clients.jdbc(dataSource())
-                .withClient("sampleClientId")
-                .authorizedGrantTypes("implicit")
-                .scopes("read")
-                .autoApprove(true)
-                .and()
-                .withClient("clientIdPassword")
-                .secret("secret")
-                .authorizedGrantTypes("password","authorization_code", "refresh_token")
-                .scopes("read");
-    }*/
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {

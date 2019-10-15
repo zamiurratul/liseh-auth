@@ -18,16 +18,17 @@ server:
   port: 7778
 
 kafka:
-  bootstrap-servers: localhost:9092
+  bootstrap-servers: localhost:7092
   consumergroup: bll-process-group
 
 logging:
   file: ./logs/server.log
   level:
     root: INFO
-    com.robi.redshift: DEBUG
+    com.liseh: DEBUG
+    org.apache.kafka: ERROR
     org.springframework.kafka: ERROR
     org.hibernate.SQL: ERROR #To log the SQL queries & output the schema creation
     org.hibernate.type.descriptor.sql.BasicBinder: ERROR #To display hibernate sql parameter values
     org.apache.kafka.clients.producer: ERROR
-    org.apache.kafka.clients.admin: ERROR
+    org.apache.kafka.clients.consumer: ERROR
