@@ -6,12 +6,12 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class KafkaMessageListener {
-    @KafkaListener(topics = "${liseh-bll-request-topic-async}")
+    @KafkaListener(topics = "${liseh-bll-request-topic-async}", autoStartup = "${kafka.listen.auto.start}")
     public void listenAsync(GenericKafkaObject request) throws InterruptedException {
         System.out.println("Async Received: " + request.toString());
     }
 
-    @KafkaListener(topics = "${liseh-bll-request-topic-sync}")
+    @KafkaListener(topics = "${liseh-bll-request-topic-sync}", autoStartup = "${kafka.listen.auto.start}")
     @SendTo
     public GenericKafkaObject listenSync(GenericKafkaObject request) throws InterruptedException {
         System.out.println("Sync Received: " + request.toString());

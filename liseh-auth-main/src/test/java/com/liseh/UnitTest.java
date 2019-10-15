@@ -39,7 +39,7 @@ public class UnitTest {
     @Test
     public void sendKafkaMessage() {
         try {
-            for (int i = 0; i < 100; i++) {
+            for (int i = 0; i < 10; i++) {
                 GenericKafkaObject request = new GenericKafkaObject();
                 request.setContent("Req from LISEH_AUTH_ASYNC_TOPIC " + i);
                 messageExchangeService.sendMessage(request);

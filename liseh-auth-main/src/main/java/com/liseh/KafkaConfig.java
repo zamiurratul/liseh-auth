@@ -73,6 +73,7 @@ public class KafkaConfig {
     @Bean
     public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, GenericKafkaObject>> kafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, GenericKafkaObject> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(consumerFactory());
         factory.setReplyTemplate(replyingKafkaTemplate(producerFactory(), kafkaMessageListenerContainer(consumerFactory())));
         return factory;
     }
